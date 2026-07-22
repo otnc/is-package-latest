@@ -1,4 +1,3 @@
-import axios from "axios";
 import * as semver from "semver";
 
 /**
@@ -35,7 +34,7 @@ function returnFormat(
   isLatest: boolean,
   currentVersion: string,
   latestVersion: string | null = null,
-  error: string | null = null,
+  error: string | null = null
 ) {
   return {
     success,
@@ -67,8 +66,11 @@ async function isPackageLatest(pkg: PkgInfo) {
   const packageName = pkg.name;
 
   try {
-    const res = await axios.get(`https://registry.npmjs.org/${packageName}`);
-    const latestVersion = res.data["dist-tags"].latest;
+    const { default: ky } = await import("ky");
+    const data = await ky
+      .get(`https://registry.npmjs.org/${packageName}`)
+      .json<{ "dist-tags": { latest: string } }>();
+    const latestVersion = data["dist-tags"].latest;
 
     const isLatest = semver.eq(currentVersion, latestVersion);
 
@@ -77,7 +79,7 @@ async function isPackageLatest(pkg: PkgInfo) {
       packageName,
       isLatest,
       currentVersion,
-      latestVersion,
+      latestVersion
     );
   } catch (e) {
     return returnFormat(
@@ -87,7 +89,7 @@ async function isPackageLatest(pkg: PkgInfo) {
       currentVersion,
       null,
       // @ts-ignore
-      e?.message,
+      e?.message
     );
   }
 }
