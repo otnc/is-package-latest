@@ -16,6 +16,9 @@
     }
   },
   "types": "dist/index.d.mts",
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=22.18.0"
   },
@@ -47,6 +50,7 @@
     "semver": "^7.7.4"
   },
   "devDependencies": {
+    "@types/node": "^22.20.1",
     "@types/semver": "^7.7.1",
     "prettier": "^3.8.1",
     "tsdown": "^0.22.13",
