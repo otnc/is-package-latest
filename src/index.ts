@@ -1,4 +1,4 @@
-import axios from "axios";
+import ky from "ky";
 import * as semver from "semver";
 
 /**
@@ -67,8 +67,10 @@ async function isPackageLatest(pkg: PkgInfo) {
   const packageName = pkg.name;
 
   try {
-    const res = await axios.get(`https://registry.npmjs.org/${packageName}`);
-    const latestVersion = res.data["dist-tags"].latest;
+    const data = await ky
+      .get(`https://registry.npmjs.org/${packageName}`)
+      .json<{ "dist-tags": { latest: string } }>();
+    const latestVersion = data["dist-tags"].latest;
 
     const isLatest = semver.eq(currentVersion, latestVersion);
 
