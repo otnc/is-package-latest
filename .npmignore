@@ -10,7 +10,6 @@ node_modules/
 
 # Dev
 src/
-scripts/
 test/
 
 # Config
@@ -18,4 +17,6 @@ test/
 .prettierignore
 .prettierrc.json
 tsconfig.json
+tsdown.config.ts
+vitest.config.ts
 .env
