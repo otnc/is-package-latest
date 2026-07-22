@@ -1,4 +1,3 @@
-import ky from "ky";
 import * as semver from "semver";
 
 /**
@@ -35,7 +34,7 @@ function returnFormat(
   isLatest: boolean,
   currentVersion: string,
   latestVersion: string | null = null,
-  error: string | null = null,
+  error: string | null = null
 ) {
   return {
     success,
@@ -67,6 +66,7 @@ async function isPackageLatest(pkg: PkgInfo) {
   const packageName = pkg.name;
 
   try {
+    const { default: ky } = await import("ky");
     const data = await ky
       .get(`https://registry.npmjs.org/${packageName}`)
       .json<{ "dist-tags": { latest: string } }>();
@@ -79,7 +79,7 @@ async function isPackageLatest(pkg: PkgInfo) {
       packageName,
       isLatest,
       currentVersion,
-      latestVersion,
+      latestVersion
     );
   } catch (e) {
     return returnFormat(
@@ -89,7 +89,7 @@ async function isPackageLatest(pkg: PkgInfo) {
       currentVersion,
       null,
       // @ts-ignore
-      e?.message,
+      e?.message
     );
   }
 }
