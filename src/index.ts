@@ -1,3 +1,4 @@
+import { ofetch } from "ofetch";
 import * as semver from "semver";
 
 /**
@@ -66,10 +67,9 @@ async function isPackageLatest(pkg: PkgInfo) {
   const packageName = pkg.name;
 
   try {
-    const { default: ky } = await import("ky");
-    const data = await ky
-      .get(`https://registry.npmjs.org/${packageName}`)
-      .json<{ "dist-tags": { latest: string } }>();
+    const data = await ofetch<{ "dist-tags": { latest: string } }>(
+      `https://registry.npmjs.org/${packageName}`
+    );
     const latestVersion = data["dist-tags"].latest;
 
     const isLatest = semver.eq(currentVersion, latestVersion);

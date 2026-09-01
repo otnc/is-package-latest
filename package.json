@@ -46,7 +46,7 @@
   },
   "homepage": "https://github.com/otnc/is-package-latest#readme",
   "dependencies": {
-    "ky": "^2.0.2",
+    "ofetch": "^1.5.1",
     "semver": "^7.7.4"
   },
   "devDependencies": {
