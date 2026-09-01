@@ -50,6 +50,7 @@ function returnFormat(
 /**
  * Checks if a package is the latest version.
  * @param {PkgInfo} pkg - An object with package name and version.
+ * @param {IsPackageLatestOptions} [options] - Optional timeout/retry/signal passed through to the fetch.
  * @returns {Promise<CheckResult>} A promise that has the result.
  */
 
@@ -58,17 +59,30 @@ interface PkgInfo {
   version: string;
 }
 
-async function isPackageLatest(pkg: PkgInfo) {
+interface IsPackageLatestOptions {
+  timeout?: number;
+  retry?: number;
+  signal?: AbortSignal;
+}
+
+const DEFAULT_TIMEOUT = 8_000;
+
+async function isPackageLatest(
+  pkg: PkgInfo,
+  options: IsPackageLatestOptions = {}
+) {
   if (!pkg || !pkg.name || !pkg.version) {
     throw new Error('The "pkg" object must have a name and a version.');
   }
 
+  const { timeout = DEFAULT_TIMEOUT, retry, signal } = options;
   const currentVersion = pkg.version;
   const packageName = pkg.name;
 
   try {
     const data = await ofetch<{ "dist-tags": { latest: string } }>(
-      `https://registry.npmjs.org/${packageName}`
+      `https://registry.npmjs.org/${packageName}`,
+      { timeout, retry, signal }
     );
     const latestVersion = data["dist-tags"].latest;
 
