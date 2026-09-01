@@ -39,4 +39,28 @@ describe("isPackageLatest", () => {
     expect(result.latestVersion).toBeNull();
     expect(result.error).toBeDefined();
   });
+
+  it("should return success false when the request times out", async () => {
+    const result = await isPackageLatest(
+      { name: "axios", version: "1.0.0" },
+      { timeout: 1 }
+    );
+    expect(result.success).toBe(false);
+    expect(result.isLatest).toBe(false);
+    expect(result.latestVersion).toBeNull();
+    expect(result.error).toBeDefined();
+  });
+
+  it("should return success false when aborted via signal", async () => {
+    const controller = new AbortController();
+    controller.abort();
+    const result = await isPackageLatest(
+      { name: "axios", version: "1.0.0" },
+      { signal: controller.signal }
+    );
+    expect(result.success).toBe(false);
+    expect(result.isLatest).toBe(false);
+    expect(result.latestVersion).toBeNull();
+    expect(result.error).toBeDefined();
+  });
 });
